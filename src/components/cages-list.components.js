@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import axios from 'axios';
 
 export default class CageList extends Component {
     constructor(props) {
@@ -8,6 +9,7 @@ export default class CageList extends Component {
         this.onChangeCageHens = this.onChangeCageHens.bind(this);
         this.onChangeCageRoos = this.onChangeCageRoos.bind(this);
         this.onChangeCageTotal = this.onChangeCageTotal.bind(this)
+        this.onSubmit = this.onSubmit.bind(this);
 
         this.state = {
             cage_name:"",
@@ -46,6 +48,20 @@ export default class CageList extends Component {
         console.log(`Cage Roos: ${this.state.cage_roos}`)
         console.log(`Cage Total: ${this.state.cage_total}`)
 
+        const newCage = {
+            cage_name:this.state.cage_name,
+            cage_hens:this.state.cage_hens,
+            cage_roos:this.state.cage_roos,
+            cage_total:this.state.cage_total,
+        }
+
+        axios.post('http//localhost:4000/cages/add',newCage)
+            .then(res => {
+                console.log(res.data);
+            }).catch(err => {
+                console.log("onSubmit newcage error", err)
+            });
+
         this.setState({
             cage_name:"",
             cage_hens:"",
@@ -53,11 +69,12 @@ export default class CageList extends Component {
             cage_total:"",
         })
     }
+
     render() {
         return (
             <div style={{marginTop: 20}}>
                 <h3> Create New Cage</h3>
-                <form onsubmit={this.onsubmit}>
+                <form onSubmit={this.onSubmit}>
 
                     <div className="form-group">
                         <label>Name:</label>
@@ -80,7 +97,11 @@ export default class CageList extends Component {
                             />   
                          <label>Total</label>
                         <div>{Number(this.state.cage_hens) + Number(this.state.cage_roos)}</div>
+                        <div className="form-group">
+                            <input type="submit" value="Create Cage" className="btn btn-primary"/>
+                        </div>
                     </div>
+
                 </form>
                 
             </div>
