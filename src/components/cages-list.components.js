@@ -1,109 +1,67 @@
 import React, {Component} from 'react';
-import axios from 'axios';
+import { Link } from "react-router-dom"
+import axios from "axios"
 
-export default class CageList extends Component {
-    constructor(props) {
-        super(props);
+const Cage = props => (
+    <tr>
+        <td>{props.cage.cage_name}</td>
+        <td>{props.cage.cage_hen}</td>
+        <td>{props.cage.cage_roo}</td>
+        <td>{props.cage.cage_total}</td>
+        <td>
+            <Link to={"/edit/id"}>Edit</Link>
+        </td>
+        <td>
+            <Link to={'/delete'}>Delete</Link>
+        </td>
+    </tr>
+)
 
-        this.onChangeCageName = this.onChangeCageName.bind(this);
-        this.onChangeCageHens = this.onChangeCageHens.bind(this);
-        this.onChangeCageRoos = this.onChangeCageRoos.bind(this);
-        this.onChangeCageTotal = this.onChangeCageTotal.bind(this)
-        this.onSubmit = this.onSubmit.bind(this);
+export default class CreateCage extends Component {
+    
+    constructor(props){
+        super(props)
+            this.state = {cages:[]};
+        };
+    
 
-        this.state = {
-            cage_name:"",
-            cage_hens:"",
-            cage_roos:"",
-            cage_total:"",
-        }
-    }
+    componentDidMount(){
+        axios.get('http://localhost:4000/cages')
+            .then(response => {
+                this.setState({cages: response.data})
+            })
+            .catch(function (error){
+                console.log(error);
+            })
 
-    onChangeCageName(e) {
-        this.setState({
-            cage_name:e.target.value
-        });
-    }
-    onChangeCageHens(e) {
-        this.setState({
-            cage_hens:e.target.value
-        });
-    }
-    onChangeCageRoos(e) {
-        this.setState({
-            cage_roos:e.target.value
-        });
-    }
-    onChangeCageTotal(e) {
-            this.setState({
-                
-            });
-    }
-    onSubmit(e) {
-        e.preventDefault();
-
-        console.log(`Form Submitted`)
-        console.log(`Cage Name: ${this.state.cage_name}`)
-        console.log(`Cage Hens: ${this.state.cage_hens}`)
-        console.log(`Cage Roos: ${this.state.cage_roos}`)
-        console.log(`Cage Total: ${this.state.cage_total}`)
-
-        const newCage = {
-            cage_name:this.state.cage_name,
-            cage_hens:this.state.cage_hens,
-            cage_roos:this.state.cage_roos,
-            cage_total:this.state.cage_total,
         }
 
-        axios.post('http//localhost:4000/cages/add',newCage)
-            .then(res => {
-                console.log(res.data);
-            }).catch(err => {
-                console.log("onSubmit newcage error", err)
-            });
-
-        this.setState({
-            cage_name:"",
-            cage_hens:"",
-            cage_roos:"",
-            cage_total:"",
-        })
+    cageList(){
+        return this.state.cages.map(function(currentCage,i){
+            return<Cage cage={currentCage} key={i}/>
+        });
     }
+
 
     render() {
         return (
-            <div style={{marginTop: 20}}>
-                <h3> Create New Cage</h3>
-                <form onSubmit={this.onSubmit}>
-
-                    <div className="form-group">
-                        <label>Name:</label>
-                        <input type="text"
-                            className="form-control"
-                            value={this.state.cage_name}
-                            onChange={this.onChangeCageName}
-                            />
-                        <label>Hens:</label>
-                        <input type="number"
-                            className="form-control"
-                            value={this.state.cage_hens}
-                            onChange={this.onChangeCageHens}
-                            />
-                         <label>Roos:</label>
-                        <input type="number"
-                            className="form-control"
-                            value={this.state.cage_roos}
-                            onChange={this.onChangeCageRoos}
-                            />   
-                         <label>Total</label>
-                        <div>{Number(this.state.cage_hens) + Number(this.state.cage_roos)}</div>
-                        <div className="form-group">
-                            <input type="submit" value="Create Cage" className="btn btn-primary"/>
-                        </div>
-                    </div>
-
-                </form>
-                
+            <div>
+                <h3>Cages List</h3>
+                <table className="table table-striped" style={{ marginTop: 20}}>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Hens</th>
+                            <th>Roos</th>
+                            <th>Total</th>
+                            <th>Action</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        { this.cageList() }
+                    </tbody>
+                </table>
             </div>
         )
     }
