@@ -4,7 +4,7 @@ export default class EditCage extends Component {
     render() {
         return (
             <div>
-                <p> Welcome to delete cage Component!</p>
+               axios.post('http://localhost:4000/cages/delete/id',newCage);
             </div>
         )
     }

@@ -9,10 +9,10 @@ const Cage = props => (
         <td>{props.cage.cage_roo}</td>
         <td>{props.cage.cage_total}</td>
         <td>
-            <Link to={"/edit/id"}>Edit</Link>
+            <Link to={"/edit/"+props.cage._id}>Edit</Link>
         </td>
         <td>
-            <Link to={'/delete'}>Delete</Link>
+            <Link to={"/delete/"+props.cage._id}>Delete</Link>
         </td>
     </tr>
 )

@@ -25,21 +25,38 @@ export default class CageList extends Component {
         });
     }
     onChangeCageHens(e) {
-        this.setState({
-            cage_hens:e.target.value
-        });
+        this.setState((prevState) => (
+            {
+                cage_hens: e.target.value,
+                cage_total: +e.target.value + +prevState.cage_roos
+            }
+        ))
+        // this.setState({
+        //     cage_hens:e.target.value
+        // });
     }
     onChangeCageRoos(e) {
-        this.setState({
-            cage_roos:e.target.value
-        });
+        this.setState((prevState) => (
+            {
+                cage_roos: e.target.value,
+                cage_total: Number(e.target.value) + Number(prevState.cage_hens)
+            }
+        ))
+        // this.setState({
+        //     cage_roos:e.target.value
+        // });
     }
  
     onChangeCageTotal(e) {
+        console.log(e.target.value)
             this.setState({
                 cage_total:e.target.value
-            });
+            }); 
     }
+     
+
+ 
+
     onSubmit(e) {
         e.preventDefault();
 
@@ -49,14 +66,16 @@ export default class CageList extends Component {
         console.log(`Cage Roos: ${this.state.cage_roos}`)
         console.log(`Cage Total: ${this.state.cage_total}`)
 
+    
         const newCage = {
             cage_name:this.state.cage_name,
-            cage_hens:this.state.cage_hens,
-            cage_roos:this.state.cage_roos,
+            cage_hen:+this.state.cage_hens,
+            cage_roo:+this.state.cage_roos,
             cage_total:this.state.cage_total,
         }
+        console.log(newCage)
 
-        axios.post('http//localhost:4000/cages/add',newCage)
+        axios.post('http://localhost:4000/cages/add',newCage)
             .then(res => console.log(res.data)
             ).catch(err => {
                 console.log("onSubmit newCage error", err)
@@ -66,7 +85,8 @@ export default class CageList extends Component {
             cage_hens:"",
             cage_roos:"",
             cage_total:"",
-        })
+        }) 
+       
     
     }
 
@@ -96,10 +116,10 @@ export default class CageList extends Component {
                             onChange={this.onChangeCageRoos}
                             />   
                          <label>Total</label>
-                            <input type="readOnly"
+                            <input type="number"
                                 className="form-control"
-                                value={Number(this.state.cage_hens) + Number(this.state.cage_roos)}
-                                onChange={Number(this.state.cage_hens) + Number(this.state.cage_roos)}
+                                value={this.state.cage_total}
+                                onChange={this.onChangeCageTotal}
                                 />
                        
                         <div className="form-group">
